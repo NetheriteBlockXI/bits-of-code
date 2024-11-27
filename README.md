@@ -15,7 +15,7 @@ This script takes a number and finds the closest factorial to it. Whether you're
 
 ### `RF.py` - **Reverse Factorial**
 Path: `py/RF.py`  
-This script works in reverse! Given a number, it returns the integer whose factorial is closest to the number. If you're trying to reverse-engineer factorials, this one's for you.
+This script works in reverse! Given a number, it returns the integer whose factorial is used to make that number. If you're trying to reverse-engineer factorials, this one's for you.
 
 **Key Features:**
 - Reverses the factorial operation.
