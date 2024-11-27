@@ -1,3 +1,5 @@
+#bruh just use Closest Factorial bruh
+
 def reverse_factorial(num):
     #I hate doing this
     if num < 1:
