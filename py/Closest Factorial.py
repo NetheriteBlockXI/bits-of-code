@@ -1,3 +1,5 @@
+#im better than those filthy reverse factorial.py users lol
+
 import math
 
 # Function to find the closest integer n such that n! ≈ approx_factorial
