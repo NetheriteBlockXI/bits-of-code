@@ -64,7 +64,6 @@ SetTimer(Tick, 100)
     Tooltip("")
 }
 
-Esc:: {
-    Tooltip("")
-    ExitApp()
+~Esc:: {
+    Tooltip("")  ; Clears the tooltip
 }
