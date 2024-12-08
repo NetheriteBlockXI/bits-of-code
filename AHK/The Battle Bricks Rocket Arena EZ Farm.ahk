@@ -1,116 +1,125 @@
-#Requires AutoHotkey v2.0
+; The Battle Bricks: Rocket Arena - Ez Farm V1.4
+; I am gonna be honest this needs a new name lol (it works with almost any level)
+; Needs v2.0
 
-; Mouse Counter
-; Zig (_3xp on Discord)
-; Code Version: 1.0.4-A / 4-A
-; Tracks clicks for LMB, RMB, MMB, MB4, MB5, and totals. Saves data periodically.
+; Credits
+; Zig (_3xp on Discord), Daanbenan (On Discord)
 
-; ------------------------
-; User Guide
-; ------------------------
-; Overview:
-; - This script tracks mouse clicks for:
-;   - LMB: Left Mouse Button
-;   - RMB: Right Mouse Button
-;   - MMB: Middle Mouse Button
-;   - MB4: Mouse Button 4 (side button)
-;   - MB5: Mouse Button 5 (side button)
-;   - Total: Total number of clicks across all buttons.
-;
+; Tutorial/How To Use:
+; Press N to start/stop the macro (unless toggle lock is active)
+; Press M to reset the timer to 0
+; Press P to set the timer to timerMax and start SendKeys immediately (unless toggle lock is active)
+; Press Shift + N to toggle the lock on/off (allows typing N and P without triggering the macro while active)
+; Q will be sent for the first 40 seconds, then the sequence Q 1 2 3 4 5 6 7 8
+
 ; Compatibility:
-; - Required: AutoHotkey v2.0 or later.
-; - Tested on: Windows 10 and Windows 11.
-;
-; Usage:
-; 1. Save this script as `MouseClickCounter.ahk`.
-; 2. Run it using AutoHotkey v2.0.
-; 3. Use your mouse as usual; the script tracks and saves counts.
-; 4. Press `ESC + Z + X` to view the click summary in a message box:
-;    -------------------------------
-;    Total Clicks - (clicks)
-;    Left Clicks - (clicks)
-;    Right Clicks - (clicks)
-;    Middle Clicks - (clicks)
-;    Mouse Button 4 Clicks - (clicks)
-;    Mouse Button 5 Clicks - (clicks)
-;    -------------------------------
-; 5. Data is automatically saved to `saves/clicks.txt` every 5 seconds.
-; 6. To stop the script, right-click its icon in the system tray and select Exit.
-; ------------------------
+; Resolution Tested (so use this if possible, otherwise edit this script to match): 1920 x 1080
+; Color Filters (all should be compatible, except for grayscale(?)): None, Deuteranopia, Protanopia, Tritanopia
 
-; Set working directory to the script's path
-SetWorkingDir(A_ScriptDir)
+toggle := 0
+lock := 0
+timeElapsed := 0
+timerMax := 40
 
-; Variables
-SaveFile := A_ScriptDir "\saves\clicks.txt"
-ClickCounts := {LMB: 0, RMB: 0, MMB: 0, MB4: 0, MB5: 0, Total: 0}
+N::
+    NFire()
+return
 
-; Ensure save directory exists
-if !FileExist(A_ScriptDir "\saves")
-    DirCreate(A_ScriptDir "\saves")
+NFire() {
+    global toggle, lock, timeElapsed
+    if (lock = 0) {
+        toggle := !toggle
+        if (toggle = 1) {
+            SetTimer, SendQ, 1000
+            SetTimer, CheckPixel, 20 
+        } else {
+            SetTimer, SendQ, Off
+            SetTimer, CheckPixel, Off
+            SetTimer, SendKeys, Off
+        }
+    } else if (lock = 1) {
+        SendInput, {N}
+    }
+}
 
-; Load existing counts from file
-if FileExist(SaveFile)
-{
-    FileRead := FileOpen(SaveFile, "r")
-    while !FileRead.AtEOF
-    {
-        line := FileRead.ReadLine()
-        if line ~= "^\w+: \d+$"
-        {
-            key := StrSplit(line, ": ")[1]
-            value := StrSplit(line, ": ")[2] + 0
-            if key in ClickCounts
-                ClickCounts[key] := value
+<+N::
+    lock := !lock
+    if (lock = 1) {
+        ToolTip, Toggle lock is ACTIVE
+        Sleep, 1000
+        ToolTip
+    } else {
+        ToolTip, Toggle lock is INACTIVE
+        Sleep, 1000
+        ToolTip
+        SetTimer, SendKeys, Off 
+    }
+return
+
+M::
+    timeElapsed := 0
+    if (lock = 1) {
+        SendInput, {M}
+    }
+return
+
+P::
+    if (toggle = 1) { 
+        if (lock = 0) {
+            timeElapsed := timerMax
+            SetTimer, SendQ, Off
+            SetTimer, SendKeys, 1000
+        }
+    } else if (lock = 1) {
+        SendInput, {P}
+    }
+return
+
+SendQ:
+    timeElapsed++
+    if (timeElapsed <= timerMax) {
+        Send, q
+    } else {
+        SetTimer, SendQ, Off
+        SetTimer, SendKeys, 1000
+    }
+return
+
+SendKeys:
+    Send, q
+    Sleep, 100
+    Send, e
+    Sleep, 100
+    Send, 1
+    Sleep, 100
+    Send, 2
+    Sleep, 100
+    Send, 3
+    Sleep, 100
+    Send, 4
+    Sleep, 100
+    Send, 5
+    Sleep, 100
+    Send, 6
+    Sleep, 100
+    Send, 7
+    Sleep, 100
+    Send, 8
+return
+
+CheckPixel:
+    if (toggle = 1) {
+        MouseMove, 893, 970
+        Sleep, 10 
+        MouseMove, 893, 995
+        Sleep, 10 
+        PixelGetColor, color, 893, 995, RGB
+        if (color = "0x010101") {
+			SetTimer, SendQ, Off
+            SetTimer, SendKeys, Off
+            Click
+            timeElapsed := 0
+			SetTimer, SendQ, 1000
         }
     }
-    FileRead.Close()
-}
-
-; Hotkeys for mouse buttons
-Hotkey("~LButton", () => UpdateClicks("LMB"))
-Hotkey("~RButton", () => UpdateClicks("RMB"))
-Hotkey("~MButton", () => UpdateClicks("MMB"))
-Hotkey("~XButton1", () => UpdateClicks("MB4"))
-Hotkey("~XButton2", () => UpdateClicks("MB5"))
-
-; Timer to save click counts every 5 seconds
-SetTimer(() => SaveClicks(SaveFile, ClickCounts), 5000)
-
-; Show data on ESC + Z + X
-Hotkey("Esc & Z & X", () => ShowData(ClickCounts))
-
-; Update click counts
-UpdateClicks(button) {
-    global ClickCounts
-    ClickCounts[button]++
-    ClickCounts.Total++
-}
-
-; Save click counts to file
-SaveClicks(SaveFile, ClickCounts) {
-    FileWrite := FileOpen(SaveFile, "w")
-    for key, value in ClickCounts
-        FileWrite.WriteLine(key ": " value)
-    FileWrite.Close()
-}
-
-; Show data in a message box
-ShowData(ClickCounts) {
-    MsgBox("
-    (LTrim)
-    Total Clicks - " ClickCounts.Total "
-    Left Clicks - " ClickCounts.LMB "
-    Right Clicks - " ClickCounts.RMB "
-    Middle Clicks - " ClickCounts.MMB "
-    Mouse Button 4 Clicks - " ClickCounts.MB4 "
-    Mouse Button 5 Clicks - " ClickCounts.MB5 "
-    ")
-}
-
-; Save counts on exit
-OnExit("SaveBeforeExit")
-SaveBeforeExit() {
-    global SaveFile, ClickCounts
-    SaveClicks(SaveFile, ClickCounts)
-}
+return
