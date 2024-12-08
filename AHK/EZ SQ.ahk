@@ -13,8 +13,8 @@ Global Threshold := 9.9
 ScreenWidth := A_ScreenWidth
 ScreenHeight := A_ScreenHeight
 
-CenterX := (ScreenWidth // 2) + 456
-CenterY := (ScreenHeight // 2) - 256
+CenterX := (ScreenWidth // 2) + 128
+CenterY := (ScreenHeight // 2) - 64
 
 Tick() {
     Global Timer, Running, CenterX, CenterY, Threshold
