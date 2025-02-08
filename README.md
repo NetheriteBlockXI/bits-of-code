@@ -22,6 +22,15 @@ This script works in reverse! Given a number, it returns the integer whose facto
 - Works with large numbers to find the original integer.
 - Perfect for mathematical curiosity or puzzle-solving.
 
+### `Color Encoder.py` - **Encode Text To Color**
+Path: `py/Color Encoder.py`  
+This script will turn any ASCII text into an RGB/HEX value.
+
+**Key Features:**
+- Handles errors well. Wrong input? It shouldn't break or stop.
+- Encode/Double Encode text. Encode will make it RGB, and Double Encode will make it HEX!
+- Decode/Double Decode values. Decode turns any RGB value into text, while Double Decode turns any HEX value into text!
+
 ## 🔧 Usage
 
 Simply clone the repository and run the desired Python script in your terminal or development environment. Both of these scripts are straightforward to use, and the logic is clean and easy to follow. Check out the functions and explore the possibilities.
