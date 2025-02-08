@@ -13,7 +13,7 @@
 ; Q will be sent for the first 40 seconds, then the sequence Q 1 2 3 4 5 6 7 8
 
 ; Compatibility:
-; Resolution Tested (so use this if possible, otherwise edit this script to match): 1920 x 1080
+; Resolution Tested (so use this if possible, otherwise edit this script to match): 1920 x 1080 at 125% scale
 ; Color Filters (all should be compatible, except for grayscale(?)): None, Deuteranopia, Protanopia, Tritanopia
 
 toggle := 0
