@@ -65,5 +65,5 @@ SetTimer(Tick, 100)
 }
 
 ~Esc:: {
-    Tooltip("")  ; Clears the tooltip
+    Tooltip("")  ; Clears the tooltip (no shit)
 }
